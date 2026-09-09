@@ -1,20 +1,18 @@
 import axios from 'axios';
 
-/* Dev me Vite proxy (/api → localhost:5000) kaam karta hai.
-   Production me Vercel/Netlify par backend alag URL hota hai — isliye VITE_API_URL support. */
-const BASE = import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}/api` : '/api';
+/* ── Backend URL resolution ──────────────────────────────────────
+   Priority: 1) VITE_API_URL (frontend build par set — recommended)
+             2) Dev = 'http://localhost:5000' (Vite proxy)
+             3) Production fallback = LIVE backend URL — yahan update
+                karo agar backend ka domain kabhi badle. */
+const FALLBACK_BACKEND = 'https://super-collections-1.onrender.com';
+const RESOLVED = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:5000' : FALLBACK_BACKEND);
 
-/* Backend origin for static assets (/uploads/... images & videos).
-   • Dev: VITE_API_URL na ho to http://localhost:5000 (Vite proxy bhi /uploads
-     forward karta hai).
-   • Production + VITE_API_URL set (frontend/backend alag): backend origin.
-   • Production + VITE_API_URL empty (Render single service — same origin): ''
-     Rakhne par /uploads relative hi rahega (koi fix nahi chahiye).
-   Absolute URLs (Unsplash, Cloudinary, data:, blob:) unchanged rehte hain. */
-export const BACKEND_URL = (
-  import.meta.env.VITE_API_URL ||
-  (import.meta.env.DEV ? 'http://localhost:5000' : '')
-).replace(/\/+$/, '');
+/* API base — sabhi environments me resolved backend ka /api. */
+const BASE = `${RESOLVED}/api`;
+
+/* Backend origin for static assets (/uploads/... images & videos). */
+export const BACKEND_URL = RESOLVED.replace(/\/+$/, '');
 
 /* DB me file paths RELATIVE store hote hain (/uploads/xyz.jpg) — render ke
    waqt unhe backend origin ke saath full URL banao. */

@@ -1,13 +1,12 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { io } from 'socket.io-client';
 
-/* Socket URL:
-   • Production + VITE_API_URL set (frontend/backend alag) → backend URL
-   • Production + VITE_API_URL empty (Render single service, same-origin) → ''
-   • Dev: localhost:5000 (Vite proxy) */
+/* Socket URL — production fallback live backend par (agar VITE_API_URL build
+   par set na ho). Dev me localhost:5000. */
+const FALLBACK_BACKEND = 'https://super-collections-1.onrender.com';
 const SOCKET_URL = (
   import.meta.env.VITE_API_URL ||
-  (import.meta.env.DEV ? 'http://localhost:5000' : '')
+  (import.meta.env.DEV ? 'http://localhost:5000' : FALLBACK_BACKEND)
 ).replace(/\/+$/, '');
 
 export function useSocket() {

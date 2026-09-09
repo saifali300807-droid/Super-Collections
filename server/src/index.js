@@ -25,13 +25,17 @@ app.use((req, res, next) => {
   next();
 });
 
-// CORS — allow the Vite client
-app.use(
-  cors({
-    origin: [process.env.CLIENT_URL || 'http://localhost:5173', 'http://localhost:5174'],
-    credentials: true,
-  })
-);
+// CORS — allow the deployed client (CLIENT_URL) + localhost dev fallback.
+// CLIENT_URL comma-separated bhi ho sakta hai; trailing slash harmless hai.
+const parseOrigins = (val) =>
+  String(val || '')
+    .split(',')
+    .map((s) => s.trim().replace(/\/+$/, ''))
+    .filter(Boolean);
+
+const corsOrigins = [...parseOrigins(process.env.CLIENT_URL), 'http://localhost:5173', 'http://localhost:5174'];
+
+app.use(cors({ origin: corsOrigins, credentials: true }));
 
 // Routes
 app.use('/api/auth', require('./routes/authRoutes'));
@@ -68,7 +72,7 @@ if (process.env.NODE_ENV === 'production') {
     app.use(express.static(build));
     app.get('*', (req, res) => res.sendFile(path.join(build, 'index.html')));
   } else {
-    console.warn('⚠️  client/dist nahi mila — sirf API mode me chal raha hai. Pehle `npm run build` chalao.');
+    console.log('⚠️  client/dist nahi mila — sirf API mode me chal raha hai. Pehle `npm run build` chalao.');
   }
 }
 
@@ -79,7 +83,7 @@ app.use(errorHandler);
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: [process.env.CLIENT_URL || 'http://localhost:5173', 'http://localhost:5174'],
+    origin: corsOrigins,
     credentials: true,
   },
 });
