@@ -2,10 +2,13 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import { io } from 'socket.io-client';
 
 /* Socket URL:
-   • Production + VITE_API_URL set (Vercel frontend → Render backend): backend URL use karo
-   • Production + VITE_API_URL empty (Render dono serve karta hai): same-origin '' sahi hai
+   • Production + VITE_API_URL set (frontend/backend alag) → backend URL
+   • Production + VITE_API_URL empty (Render single service, same-origin) → ''
    • Dev: localhost:5000 (Vite proxy) */
-const SOCKET_URL = (import.meta.env.VITE_API_URL || (process.env.NODE_ENV === 'production' ? '' : 'http://localhost:5000')).replace(/\/+$/, '');
+const SOCKET_URL = (
+  import.meta.env.VITE_API_URL ||
+  (import.meta.env.DEV ? 'http://localhost:5000' : '')
+).replace(/\/+$/, '');
 
 export function useSocket() {
   const socketRef = useRef(null);

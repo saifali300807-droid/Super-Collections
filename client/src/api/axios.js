@@ -6,12 +6,15 @@ const BASE = import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}/api
 
 /* Backend origin for static assets (/uploads/... images & videos).
    • Dev: VITE_API_URL na ho to http://localhost:5000 (Vite proxy bhi /uploads
-     forward karta hai, but direct origin bhi chalega — <img>/<video> par CORS
-     apply nahi hota).
-   • Production (Vercel frontend + Render backend): VITE_API_URL set hota hai —
-     uploads sirf backend origin par served hain, isliye prefix zaroori hai.
+     forward karta hai).
+   • Production + VITE_API_URL set (frontend/backend alag): backend origin.
+   • Production + VITE_API_URL empty (Render single service — same origin): ''
+     Rakhne par /uploads relative hi rahega (koi fix nahi chahiye).
    Absolute URLs (Unsplash, Cloudinary, data:, blob:) unchanged rehte hain. */
-export const BACKEND_URL = (import.meta.env.VITE_API_URL || 'http://localhost:5000').replace(/\/+$/, '');
+export const BACKEND_URL = (
+  import.meta.env.VITE_API_URL ||
+  (import.meta.env.DEV ? 'http://localhost:5000' : '')
+).replace(/\/+$/, '');
 
 /* DB me file paths RELATIVE store hote hain (/uploads/xyz.jpg) — render ke
    waqt unhe backend origin ke saath full URL banao. */
