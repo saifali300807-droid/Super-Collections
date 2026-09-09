@@ -33,7 +33,7 @@ export default function AdminSettings() {
         },
         commerce: {
           taxRate: Number(d.commerce?.taxRate) || 5,
-          shippingRate: Number(d.commerce?.shippingRate) || 99,
+          shippingRate: Number(d.commerce?.shippingRate) || 49,
           freeShippingAbove: Number(d.commerce?.freeShippingAbove) || 999,
         },
       });
@@ -146,7 +146,7 @@ export default function AdminSettings() {
                 onChange={(e) => set('commerce.taxRate', Number(e.target.value) || 0)} />
             </div>
             <div className="form-group">
-              <label>Shipping Charge (₹)</label>
+              <label>Safe Delivery Charge (₹)</label>
               <input type="number" min="0" step="1"
                 value={s.commerce.shippingRate}
                 onChange={(e) => set('commerce.shippingRate', Number(e.target.value) || 0)} />

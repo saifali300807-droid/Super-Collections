@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import api from '../api/axios';
 
-const DEFAULT_COMMERCE = { taxRate: 5, shippingRate: 99, freeShippingAbove: 999 };
+const DEFAULT_COMMERCE = { taxRate: 5, shippingRate: 49, freeShippingAbove: 999 };
 
 /* Settings.commerce (GST + shipping rules) — server orderController bhi inhi
    values se totals calculate karta hai, isliye summary aur actual order bill

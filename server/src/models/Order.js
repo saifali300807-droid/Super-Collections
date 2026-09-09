@@ -45,7 +45,7 @@ const orderSchema = new mongoose.Schema(
     // badal de to bhi purane orders ke liye snapshot par audit hota hai.
     pricingSnapshot: {
       taxRate: { type: Number, default: 5 },
-      shippingRate: { type: Number, default: 99 },
+      shippingRate: { type: Number, default: 49 },
       freeShippingAbove: { type: Number, default: 999 },
     },
   },

@@ -277,13 +277,13 @@ export default function Home() {
         <div className="features-grid">
           <div className="feature-card">
             <span className="feature-icon">🚚</span>
-            <h3>Free Shipping</h3>
-            <p>On orders above ₹2,999 across India</p>
+            <h3>Safe Delivery</h3>
+            <p>FREE above ₹999 · India Post, across India</p>
           </div>
           <div className="feature-card">
             <span className="feature-icon">🔁</span>
             <h3>Easy Returns</h3>
-            <p>14-day hassle-free return policy</p>
+            <p>7-day hassle-free return policy</p>
           </div>
           <div className="feature-card">
             <span className="feature-icon">🔒</span>

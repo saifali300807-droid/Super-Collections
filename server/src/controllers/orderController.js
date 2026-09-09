@@ -4,7 +4,7 @@ const User = require('../models/User');
 const Settings = require('../models/Settings');
 const razorpay = require('../utils/razorpay');
 
-const COMMERCE_DEFAULTS = { taxRate: 5, shippingRate: 99, freeShippingAbove: 999 };
+const COMMERCE_DEFAULTS = { taxRate: 5, shippingRate: 49, freeShippingAbove: 999 };
 const VALID_PAYMENT_METHODS = ['Razorpay', 'COD'];
 const REQUIRED_ADDRESS = ['fullName', 'phone', 'address', 'city', 'state', 'pincode'];
 

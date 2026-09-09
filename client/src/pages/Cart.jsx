@@ -66,7 +66,7 @@ export default function Cart() {
         <div className="summary">
           <h3>Order Summary</h3>
           <div className="sum-row"><span>Subtotal</span><span>₹{subtotal.toLocaleString('en-IN')}</span></div>
-          <div className="sum-row"><span>Shipping</span><span>{shipping === 0 ? 'FREE' : `₹${shipping}`}</span></div>
+          <div className="sum-row"><span>Safe Delivery</span><span>{shipping === 0 ? 'FREE' : `₹${shipping}`}</span></div>
           <div className="sum-row"><span>GST ({taxRate}%)</span><span>₹{tax.toLocaleString('en-IN')}</span></div>
           <div className="sum-row total"><span>Total</span><span>₹{total.toLocaleString('en-IN')}</span></div>
 

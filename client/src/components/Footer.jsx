@@ -22,6 +22,14 @@ export default function Footer() {
             <Link to="/sale">🔥 Sale</Link>
           </div>
           <div>
+            <h4>Legal</h4>
+            <Link to="/policies/privacy">Privacy Policy</Link>
+            <Link to="/policies/returns">Return &amp; Refund</Link>
+            <Link to="/policies/payment">Payment Policy</Link>
+            <Link to="/policies/delivery">Delivery Policy</Link>
+            <Link to="/policies/terms">Terms &amp; Conditions</Link>
+          </div>
+          <div>
             <h4>Account</h4>
             <Link to="/login">Sign In</Link>
             <Link to="/orders">My Orders</Link>

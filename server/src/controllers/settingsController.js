@@ -28,7 +28,7 @@ exports.getCommerce = async (req, res, next) => {
       success: true,
       commerce: {
         taxRate: Number(c.taxRate) || 5,
-        shippingRate: Number(c.shippingRate) || 99,
+        shippingRate: Number(c.shippingRate) || 49,
         freeShippingAbove: Number(c.freeShippingAbove) || 999,
       },
     });

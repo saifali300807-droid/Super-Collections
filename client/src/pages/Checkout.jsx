@@ -163,7 +163,7 @@ export default function Checkout() {
               <span>₹{(i.price * i.qty).toLocaleString('en-IN')}</span>
             </div>
           ))}
-          <div className="sum-row"><span>Shipping</span><span>{shipping === 0 ? 'FREE' : `₹${shipping}`}</span></div>
+          <div className="sum-row"><span>Safe Delivery</span><span>{shipping === 0 ? 'FREE' : `₹${shipping}`}</span></div>
           <div className="sum-row"><span>GST ({taxRate}%)</span><span>₹{tax.toLocaleString('en-IN')}</span></div>
           <div className="sum-row total"><span>Total</span><span>₹{total.toLocaleString('en-IN')}</span></div>
           {shipping === 0 ? (

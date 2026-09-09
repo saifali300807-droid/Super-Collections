@@ -37,7 +37,7 @@ const settingsSchema = new mongoose.Schema(
        cart/checkout summary inhi values se totals calculate karte hain. */
     commerce: {
       taxRate: { type: Number, default: 5, min: 0, max: 100 },
-      shippingRate: { type: Number, default: 99, min: 0 },
+      shippingRate: { type: Number, default: 49, min: 0 },
       freeShippingAbove: { type: Number, default: 999, min: 0 },
     },
   },

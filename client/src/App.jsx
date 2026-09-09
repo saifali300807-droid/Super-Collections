@@ -19,6 +19,7 @@ import MyOrders from './pages/MyOrders';
 import Profile from './pages/Profile';
 import Contact from './pages/Contact';
 import Sale from './pages/Sale';
+import PolicyPage from './pages/PolicyPage';
 
 import AdminLayout from './pages/admin/AdminLayout';
 import Dashboard from './pages/admin/Dashboard';
@@ -175,6 +176,8 @@ export default function App() {
           <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/sale" element={<Sale />} />
+          <Route path="/policies" element={<PolicyPage />} />
+          <Route path="/policies/:slug" element={<PolicyPage />} />
 
           <Route path="/admin" element={<ProtectedRoute admin><AdminLayout /></ProtectedRoute>}>
             <Route index element={<Dashboard />} />
