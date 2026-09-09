@@ -1,0 +1,24 @@
+# Dependencies
+node_modules/
+
+# Environment secrets — GitHub par kabhi push mat karna!
+server/.env
+client/.env
+.env
+*.env
+
+# Builds
+client/dist/
+
+# Logs
+server/server.log
+server/server-err.log
+*.log
+
+# Uploaded files (temporary)
+server/src/uploads/
+
+# OS / Editor junk
+.DS_Store
+Thumbs.db
+.vscode/

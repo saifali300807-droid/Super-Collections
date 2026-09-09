@@ -1,0 +1,12 @@
+{
+  "name": "super-collection",
+  "version": "1.0.0",
+  "description": "Luxury Girls Wear E-commerce — MERN + Razorpay",
+  "scripts": {
+    "install-all": "cd server && npm install && cd ../client && npm install",
+    "server": "cd server && npm run dev",
+    "client": "cd client && npm run dev",
+    "build": "cd client && npm run build",
+    "start": "cd server && npm start"
+  }
+}
