@@ -27,6 +27,11 @@ export default function Home() {
   const navigate = useNavigate();
 
   // Real-time updates handler
+  /* Valid circles filter — DB kabhi-kabhi invalid image string store kar deta hai
+   (e.g. "/uploads/[object Object]") jo 404 lavta hai. Unhe nikal do. */
+const validCircle = (c) => c && c.name && c.image && !String(c.image).includes('[object') && String(c.image).trim() !== '';
+const validCircles = (arr) => (Array.isArray(arr) ? arr : []).filter(validCircle);
+
   const handleRealtimeUpdate = useCallback((type, data) => {
     if (type === 'product') {
       loadData(); // Refresh product data
@@ -178,7 +183,7 @@ export default function Home() {
       )}
 
       {/* ── Category circles — circular images + naam neeche ── */}
-      {(circles.filter((c) => c && c.name).length > 0 || derivedCircles.length > 0) && (
+      {(validCircles(circles).length > 0 || derivedCircles.length > 0) && (
         <section className="section container" style={{ paddingTop: 48 }}>
           <div className="section-head">
             <div className="eyebrow">Traditional Collection</div>
@@ -186,7 +191,7 @@ export default function Home() {
             <div className="line" />
           </div>
           <div className="cat-circles">
-            {(circles.filter((c) => c && c.name).length > 0 ? circles.filter((c) => c && c.name) : derivedCircles).map((c, i) => (
+            {(validCircles(circles).length > 0 ? validCircles(circles) : derivedCircles).map((c, i) => (
               <button
                 key={`${c.name}-${i}`}
                 className="cat-circle"

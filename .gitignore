@@ -15,8 +15,9 @@ server/server.log
 server/server-err.log
 *.log
 
-# Uploaded files (temporary)
-server/src/uploads/
+# Uploaded files — RENDER PAR NEEDED (ephemeral storage fix):
+# Inhe git mein commit karo taaki Render deploy par images/videos available rahen.
+# New admin uploads commit karne ke liye: git add server/src/uploads && commit
 
 # OS / Editor junk
 .DS_Store
