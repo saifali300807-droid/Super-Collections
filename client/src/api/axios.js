@@ -21,15 +21,24 @@ export const resolveAssetUrl = (url) => {
   return url.startsWith('/') ? `${BACKEND_URL}${url}` : `${BACKEND_URL}/${url}`;
 };
 
-const api = axios.create({ baseURL: BASE, withCredentials: true, timeout: 60000 }); // httpOnly auth cookie har request ke saath jayegi; 60s timeout = UI kabhi hang na ho
+const api = axios.create({ baseURL: BASE, withCredentials: true, timeout: 60000 }); // auth token har request ke saath jayega; 60s timeout = UI kabhi hang na ho
 
-/* Token localStorage me NAHI hai — server httpOnly cookie set karta hai.
-   401 aaye to sirf cached user info clear karo (cookie expired/invalid). */
+/* Auth token (Bearer) — cross-site browsers third-party cookie block kar dete hain,
+   isliye login response se mila token localStorage mein rakhte hain aur har request
+   par header me bhejte hain. Cookie (agar mila) bhi extra layer hai. */
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('sc_token');
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
+});
+
+/* 401 aaye to cached user info + token clear karo (session invalid). */
 api.interceptors.response.use(
   (res) => res,
   (err) => {
     if (err.response?.status === 401) {
       localStorage.removeItem('sc_user');
+      localStorage.removeItem('sc_token');
     }
     return Promise.reject(err);
   }

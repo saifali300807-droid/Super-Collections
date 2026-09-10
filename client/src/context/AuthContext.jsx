@@ -33,6 +33,7 @@ export function AuthProvider({ children }) {
 
   const login = async (email, password) => {
     const res = await api.post('/auth/login', { email, password });
+    if (res.data.token) localStorage.setItem('sc_token', res.data.token);
     localStorage.setItem('sc_user', JSON.stringify(res.data.user));
     setUser(res.data.user);
     return res.data;
@@ -40,6 +41,7 @@ export function AuthProvider({ children }) {
 
   const register = async (name, email, password) => {
     const res = await api.post('/auth/register', { name, email, password });
+    if (res.data.token) localStorage.setItem('sc_token', res.data.token);
     localStorage.setItem('sc_user', JSON.stringify(res.data.user));
     setUser(res.data.user);
     return res.data;
@@ -49,6 +51,7 @@ export function AuthProvider({ children }) {
      auto-verified by the provider, no email-code step) */
   const socialAuth = async (provider, payload = {}) => {
     const res = await api.post('/auth/social', { provider, ...payload });
+    if (res.data.token) localStorage.setItem('sc_token', res.data.token);
     localStorage.setItem('sc_user', JSON.stringify(res.data.user));
     setUser(res.data.user);
     return res.data;
@@ -59,6 +62,7 @@ export function AuthProvider({ children }) {
     try {
       await api.post('/auth/logout');
     } catch { /* cookie already gone */ }
+    localStorage.removeItem('sc_token');
     localStorage.removeItem('sc_user');
     setUser(null);
     if (redirect) window.location.href = '/login';

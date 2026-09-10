@@ -40,11 +40,14 @@ exports.register = async (req, res, next) => {
       new Promise((resolve) => setTimeout(() => resolve({ sent: false, slow: true }), 5000)),
     ]);
 
-    // Token ab localStorage ke bajaye httpOnly cookie me jata hai (XSS-safe)
-    setAuthCookie(res, signToken(user._id));
+    // Token cookie + response body dono me (Bearer token cross-site browsers
+    // mein dabba cookie block hone par bhi login kaam karta hai).
+    const token = signToken(user._id);
+    setAuthCookie(res, token);
 
     res.status(201).json({
       success: true,
+      token,
       user: publicUser(user),
       // Email configured nahi ya delivery fail → code response me de do taaki
       // user verify ho sake (dev mode jaisa graceful fallback).
@@ -96,8 +99,9 @@ exports.login = async (req, res, next) => {
     if (user.isBlocked)
       return res.status(403).json({ success: false, message: 'Your account has been blocked. Contact support.' });
 
-    setAuthCookie(res, signToken(user._id));
-    res.json({ success: true, user: publicUser(user) });
+    const token = signToken(user._id);
+    setAuthCookie(res, token);
+    res.json({ success: true, token, user: publicUser(user) });
   } catch (err) {
     next(err);
   }
@@ -298,8 +302,9 @@ exports.socialAuth = async (req, res, next) => {
       return res.status(403).json({ success: false, message: 'Your account has been blocked. Contact support.' });
     }
 
-    setAuthCookie(res, signToken(user._id));
-    res.json({ success: true, user: publicUser(user), isNew, mode });
+    const token = signToken(user._id);
+    setAuthCookie(res, token);
+    res.json({ success: true, token, user: publicUser(user), isNew, mode });
   } catch (err) {
     next(err);
   }
