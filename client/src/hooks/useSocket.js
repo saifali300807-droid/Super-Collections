@@ -1,13 +1,10 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { io } from 'socket.io-client';
 
-/* Socket URL — production fallback live backend par (agar VITE_API_URL build
-   par set na ho). Dev me localhost:5000. */
-const FALLBACK_BACKEND = 'https://super-collections-1.onrender.com';
-const SOCKET_URL = (
-  import.meta.env.VITE_API_URL ||
-  (import.meta.env.DEV ? 'http://localhost:5000' : FALLBACK_BACKEND)
-).replace(/\/+$/, '');
+/* Socket URL — production HAMESHA LIVE backend se connect (galat VITE_API_URL
+   set hone se bachne ke liye). Dev me localhost:5000. */
+const LIVE_BACKEND = 'https://super-collections-1.onrender.com';
+const SOCKET_URL = (import.meta.env.DEV ? 'http://localhost:5000' : LIVE_BACKEND).replace(/\/+$/, '');
 
 export function useSocket() {
   const socketRef = useRef(null);
