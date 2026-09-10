@@ -3,6 +3,9 @@ import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ProtectedRoute from './components/ProtectedRoute';
+import { ConfirmProvider, useConfirm } from './components/ConfirmDialog';
+
+export { useConfirm };
 
 import Home from './pages/Home';
 import Shop from './pages/Shop';
@@ -156,9 +159,10 @@ export default function App() {
 
   return (
     <ToastProvider>
-      <ScrollToTop />
-      <Navbar />
-      <main className="page-main">
+      <ConfirmProvider>
+        <ScrollToTop />
+        <Navbar />
+        <main className="page-main">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/shop" element={<Shop />} />
@@ -194,6 +198,7 @@ export default function App() {
       </main>
       <Footer />
       <FloatingNav />
+      </ConfirmProvider>
     </ToastProvider>
   );
 }

@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import api, { resolveAssetUrl } from '../../api/axios';
-import { useToast, errMsg } from '../../App';
+import { useToast, errMsg, useConfirm } from '../../App';
 
 const BLANK = {
   name: '', category: '', price: '', comparePrice: '', discount: '', fabric: '',
@@ -85,6 +85,7 @@ export default function AdminProducts() {
   const [products, setProducts] = useState([]);
   const [keyword, setKeyword] = useState('');
   const toast = useToast();
+  const confirm = useConfirm();
   const navigate = useNavigate();
   const [categories, setCategories] = useState([]);
   const [editModal, setEditModal] = useState({ open: false, product: null });
@@ -106,7 +107,13 @@ export default function AdminProducts() {
   useEffect(load, [keyword]);
 
   const remove = async (id, name) => {
-    if (!window.confirm(`Delete "${name}"? This cannot be undone.`)) return;
+    const ok = await confirm({
+      title: 'Delete this product?',
+      message: `"${name}" will be permanently removed. This action cannot be undone.`,
+      danger: true,
+      confirmText: 'Yes, Delete',
+    });
+    if (!ok) return;
     try {
       await api.delete(`/products/${id}`);
       toast('Product deleted 🗑');

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../api/axios';
-import { useToast, errMsg } from '../App';
+import { useToast, errMsg, useConfirm } from '../App';
 import { Loader } from '../components/ProductCard';
 import { paymentLabel } from '../utils/paymentLabel';
 import { resolveAssetUrl } from '../api/axios';
@@ -11,6 +11,7 @@ export default function MyOrders() {
   const [loading, setLoading] = useState(true);
   const [openId, setOpenId] = useState(null);
   const toast = useToast();
+  const confirm = useConfirm();
 
   useEffect(() => {
     api.get('/orders/mine')
@@ -22,7 +23,13 @@ export default function MyOrders() {
   const toggle = (id) => setOpenId(openId === id ? null : id);
 
   const cancel = async (id) => {
-    if (!window.confirm('Cancel this order?')) return;
+    const ok = await confirm({
+      title: 'Cancel this order?',
+      message: 'Your order will be cancelled. If you already paid, the refund will be processed to your original payment method.',
+      danger: true,
+      confirmText: 'Yes, Cancel Order',
+    });
+    if (!ok) return;
     try {
       await api.put(`/orders/${id}/cancel`);
       toast('Order cancelled');

@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import api from '../../api/axios';
 import { useAuth } from '../../context/AuthContext';
-import { useToast, errMsg } from '../../App';
+import { useToast, errMsg, useConfirm } from '../../App';
 
 export default function AdminUsers() {
   const [users, setUsers] = useState([]);
   const { user: me } = useAuth();
   const toast = useToast();
+  const confirm = useConfirm();
   const [selectedUser, setSelectedUser] = useState(null);
 
   const load = () => api.get('/admin/users').then((res) => setUsers(res.data.users)).catch(() => {});
@@ -24,7 +25,13 @@ export default function AdminUsers() {
   };
 
   const remove = async (id, name) => {
-    if (!window.confirm(`Delete user "${name}"? Their orders will remain.`)) return;
+    const ok = await confirm({
+      title: 'Delete this user?',
+      message: `User "${name}" will be permanently removed from the store. Their past orders will remain in records.`,
+      danger: true,
+      confirmText: 'Yes, Delete',
+    });
+    if (!ok) return;
     try {
       await api.delete(`/admin/users/${id}`);
       toast('User deleted 🗑');

@@ -4,7 +4,7 @@ import api from '../api/axios';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { useCommerce } from '../hooks/useCommerce';
-import { useToast, errMsg } from '../App';
+import { useToast, errMsg, useConfirm } from '../App';
 
 const loadRazorpay = () =>
   new Promise((resolve) => {
@@ -21,6 +21,7 @@ export default function Checkout() {
   const { user } = useAuth();
   const config = useCommerce();
   const toast = useToast();
+  const confirm = useConfirm();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -50,9 +51,12 @@ export default function Checkout() {
 
     if (payRes.data.demo) {
       // ── DEMO MODE (payment gateway keys not configured) ──
-      const ok = window.confirm(
-        `DEMO PAYMENT MODE 💳\n\nPayment gateway keys set nahi hain, isliye ye simulated payment hai.\nAsli UPI/Card payment ke liye server/.env me RAZORPAY_KEY_ID aur RAZORPAY_KEY_SECRET set karke server restart karein.\n\nOrder Total: ₹${order.totalPrice.toLocaleString('en-IN')}\n\nProceed with demo payment?`
-      );
+      const ok = await confirm({
+        title: 'Demo Payment Mode 💳',
+        message: `Payment gateway keys set nahi hain, isliye ye simulated payment hai. Asli UPI/Card payment ke liye server me RAZORPAY_KEY_ID aur RAZORPAY_KEY_SECRET set karein.\n\nOrder Total: ₹${order.totalPrice.toLocaleString('en-IN')}`,
+        confirmText: 'Proceed (Demo)',
+        cancelText: 'Go Back',
+      });
       if (!ok) return;
       await api.put(`/orders/${order._id}/pay`, { id: 'demo_' + Date.now(), demo: true });
       clearCart();
