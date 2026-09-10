@@ -21,7 +21,7 @@ export const resolveAssetUrl = (url) => {
   return url.startsWith('/') ? `${BACKEND_URL}${url}` : `${BACKEND_URL}/${url}`;
 };
 
-const api = axios.create({ baseURL: BASE, withCredentials: true }); // httpOnly auth cookie har request ke saath jayegi
+const api = axios.create({ baseURL: BASE, withCredentials: true, timeout: 60000 }); // httpOnly auth cookie har request ke saath jayegi; 60s timeout = UI kabhi hang na ho
 
 /* Token localStorage me NAHI hai — server httpOnly cookie set karta hai.
    401 aaye to sirf cached user info clear karo (cookie expired/invalid). */

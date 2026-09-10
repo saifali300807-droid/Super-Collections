@@ -29,11 +29,16 @@ exports.register = async (req, res, next) => {
     const code = user.getVerifyCode();
     await user.save({ validateBeforeSave: false });
 
-    await sendEmail({
-      to: user.email,
-      subject: 'Welcome to Super Collection — Your Verification Code 👑',
-      text: `Hi ${user.name},\n\nYour verification code is: ${code}\n\nThis code is valid for 15 minutes. Do not share it with anyone.`,
-    });
+    /* Email fire-and-forget with 5s timeout guard — account registration
+       kabhi email-send par block nahi hota (production SMTP hang case). */
+    const mail = await Promise.race([
+      sendEmail({
+        to: user.email,
+        subject: 'Welcome to Super Collection — Your Verification Code 👑',
+        text: `Hi ${user.name},\n\nYour verification code is: ${code}\n\nThis code is valid for 15 minutes. Do not share it with anyone.`,
+      }),
+      new Promise((resolve) => setTimeout(() => resolve({ sent: false, slow: true }), 5000)),
+    ]);
 
     // Token ab localStorage ke bajaye httpOnly cookie me jata hai (XSS-safe)
     setAuthCookie(res, signToken(user._id));
@@ -41,8 +46,9 @@ exports.register = async (req, res, next) => {
     res.status(201).json({
       success: true,
       user: publicUser(user),
-      // Dev mode me SMTP na hone par code turant de dete hain
-      devVerifyCode: process.env.SMTP_HOST ? undefined : code,
+      // Email configured nahi ya delivery fail → code response me de do taaki
+      // user verify ho sake (dev mode jaisa graceful fallback).
+      devVerifyCode: mail && mail.sent ? undefined : code,
     });
   } catch (err) {
     next(err);
@@ -139,16 +145,21 @@ exports.forgotPassword = async (req, res, next) => {
     await user.save({ validateBeforeSave: false });
 
     const resetUrl = `${process.env.CLIENT_URL}/reset-password/${token}`;
-    await sendEmail({
-      to: user.email,
-      subject: 'Super Collection — Reset Your Password',
-      text: `Reset your password: ${resetUrl}\n\nValid for 1 hour. If you didn't request this, ignore this email.`,
-    });
+    /* Email with timeout guard — response kabhi email par block nahi hota. */
+    const mail = await Promise.race([
+      sendEmail({
+        to: user.email,
+        subject: 'Super Collection — Reset Your Password',
+        text: `Reset your password: ${resetUrl}\n\nValid for 1 hour. If you didn't request this, ignore this email.`,
+      }),
+      new Promise((resolve) => setTimeout(() => resolve({ sent: false, slow: true }), 5000)),
+    ]);
 
     res.json({
       success: true,
-      message: 'Password reset link sent (check server console in dev mode)',
-      devResetUrl: process.env.SMTP_HOST ? undefined : resetUrl,
+      message: 'If that email exists, a password reset link has been sent',
+      // Email fail → link response me de do taaki flow aage badh sake
+      devResetUrl: mail && mail.sent ? undefined : resetUrl,
     });
   } catch (err) {
     next(err);
