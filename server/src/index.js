@@ -64,6 +64,21 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
 // Health check
 app.get('/api/health', (req, res) => res.json({ success: true, message: 'Super Collection API is running 👑' }));
 
+// Root — ye URL sirf API server hai (website nahi). Browser main kholne par
+// friendly message dikhao — "Route not found" confusion khatam.
+app.get('/', (req, res) => {
+  const fe = process.env.CLIENT_URL || 'https://super-collection-frontend.onrender.com';
+  res.json({
+    success: true,
+    message: 'Super Collection API is live. Website yahan hai: ' + fe,
+    website: fe,
+    health: req.protocol + '://' + req.get('host') + '/api/health',
+  });
+});
+
+// API root info (koi exact API route nahi par docs ka hint)
+app.get('/api', (req, res) => res.json({ success: true, message: 'Super Collection API. Try /api/health, /api/products, /api/settings' }));
+
 // Serve client build (production)
 if (process.env.NODE_ENV === 'production') {
   // __dirname = server/src → 2 level up = client/dist
